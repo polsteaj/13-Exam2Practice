@@ -42,9 +42,9 @@ def main():
     run_test_init()
     run_test_append_string()
     run_test_double()
-#    run_test_shrink()
+    run_test_shrink()
 #    run_test_double_then_shrink()
-#     run_test_reset()
+    run_test_reset()
 #     run_test_steal()
 #     run_test_get_history()
 #     run_test_combined_box()
@@ -108,6 +108,8 @@ class Box(object):
             self.contents = contents
         self.volume = volume
         self.discarded = 0
+        self.initcontents = contents
+        self.initvolume = volume
 
     def append_string(self, additional_contents):
         """
@@ -277,20 +279,21 @@ class Box(object):
         # IMPORTANT: Write a solution to this problem in pseudo-code,
         # and THEN translate the pseudo-code to a solution.
         # --------------------------------------------------------------
-        b = ''
-        c = ''
-        if new_volume < self.volume:
-            for k in range(new_volume):
-                b = b + self.contents[k]
-            for k in range(new_volume, len(self.contents)):
-                c = c + self.contents[k]
-        elif new_volume >= self.volume:
-            b = self.contents
-            c = ''
-        self.contents = b
+        a = ''
+        if len(self.contents) <= 0:
+            return a
+
+        for k in range(len(self.contents)):
+            if k >= new_volume:
+                a = a + self.contents[k]
+                self.discarded = self.discarded + 1
         self.volume = new_volume
-        self.discarded = self.discarded + len(c)
-        return c
+        contents = ''
+        for k in range(len(self.contents)):
+            if k < self.volume:
+                contents = contents + self.contents[k]
+        self.contents = contents
+        return a
     def double_then_shrink(self, new_volume):
         """
         What comes in:
@@ -356,7 +359,7 @@ class Box(object):
           when this Box was constructed.
         """
         # --------------------------------------------------------------
-        # TODO: 7. Implement and test this function.
+        # DONE: 7. Implement and test this function.
         #     The testing code is already written for you (above).
         # --------------------------------------------------------------
         # --------------------------------------------------------------
@@ -364,7 +367,8 @@ class Box(object):
         #    DIFFICULTY:      4
         #    TIME ESTIMATE:   5 minutes.
         # --------------------------------------------------------------
-
+        self.volume = self.initvolume
+        self.contents = self.initcontents
     def steal(self, other_box):
         """
         What comes in:
